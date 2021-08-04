@@ -1,0 +1,18 @@
+Artifactory:
+  server: partnership.jfrog.io #change to your servername
+  intName: artifactory_integration
+  devRepo: workshop-docker-local
+  prodRepo: workshop-docker-prod-local
+PagerDuty:
+  intName: pagerduty_integration
+GitHub:
+  path: jfrogtraining/pagerduty-workshop #change to your github username
+  gitProvider: github_integration
+AWS:
+  intName: aws_integration
+  eks: eks_integration
+  region: us-west-2
+app:
+  dockerImageName: partnership.jfrog.io/workshop-docker/pagerduty-workshop-app #change to your servername
+  dockerFileLocation: workshop-app
+  buildName: pagerduty-workshop-app

@@ -1,0 +1,4 @@
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/jefferyfry/funclog v0.0.0-20191010235000-f6a0246169e0 h1:aE0S1leH+W4+QIdQCaJtxaD/cp/QVP1ZD8ghEG+CkbQ=
+github.com/jefferyfry/funclog v0.0.0-20191010235000-f6a0246169e0/go.mod h1:351RJxQBPQhj77q5eFGfYbxZUkYDCYseqDn2gUTn3p8=
