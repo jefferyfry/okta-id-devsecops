@@ -5,17 +5,15 @@ import (
 	"net/http"
 )
 
-//SetUpService sets up the subscription service.
+//SetUpService sets up the API service.
 func SetUpService(webServiceEndpoint string,healthCheckEndpoint string) error {
 	handler := GetApiHandler()
 
-	healthCheck := mux.NewRouter()
-	healthCheck.Methods(http.MethodGet).Path("/healthz").HandlerFunc(handler.Healthz)
-	go http.ListenAndServe(":"+healthCheckEndpoint, healthCheck)
+	apiService := mux.NewRouter()
 
-	webService := mux.NewRouter()
+	apiService.Methods(http.MethodGet).Path("/healthz").HandlerFunc(handler.Healthz)
 
-	webService.Methods(http.MethodGet).Path("/healthz").HandlerFunc(handler.Healthz)
+	apiService.Methods(http.MethodGet).Path("/api/users").HandlerFunc(handler.ValidateApiAccess)
 
-	return http.ListenAndServe(":"+webServiceEndpoint, webService)
+	return http.ListenAndServe(":"+webServiceEndpoint, apiService)
 }

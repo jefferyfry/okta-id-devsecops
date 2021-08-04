@@ -9,20 +9,20 @@ import (
 )
 
 var (
-	FrontendServiceEndpoint = "8086"
+	ServiceEndpoint = "8086"
 	HealthCheckEndpoint = "8096"
 	LogI = funclog.NewInfoLogger("INFO: ")
 	LogE = funclog.NewErrorLogger("ERROR: ")
 )
 
 type ServiceConfig struct {
-	FrontendServiceEndpoint string `json:"frontendServiceEndpoint"`
+	ServiceEndpoint string `json:"serviceEndpoint"`
 	HealthCheckEndpoint string `json:"healthCheckEndpoint"`
 }
 
 func GetConfiguration() (ServiceConfig, error) {
 	conf := ServiceConfig {
-		FrontendServiceEndpoint,
+		ServiceEndpoint,
 		HealthCheckEndpoint,
 	}
 
@@ -35,24 +35,24 @@ func GetConfiguration() (ServiceConfig, error) {
 
 	//parse commandline arguments
 	configFile := flag.String("configFile", "", "set the path to the configuration json file")
-	frontendServiceEndpoint := flag.String("frontendServiceEndpoint", "", "set the value of the frontend service endpoint port")
+	serviceEndpoint := flag.String("serviceEndpoint", "", "set the value of the service endpoint port")
 	healthCheckEndpoint := flag.String("healthCheckEndpoint", "", "set the value of the health check endpoint port")
 	flag.Parse()
 
 	//try environment variables if necessary
 	if *configFile == "" {
-		*configFile = os.Getenv("CLOUD_BILL_FRONTEND_CONFIG_FILE")
+		*configFile = os.Getenv("CONFIG_FILE")
 	}
-	if *frontendServiceEndpoint == "" {
-		*frontendServiceEndpoint = os.Getenv("CLOUD_BILL_FRONTEND_SERVICE_ENDPOINT")
+	if *serviceEndpoint == "" {
+		*serviceEndpoint = os.Getenv("SERVICE_ENDPOINT")
 	}
 	if *healthCheckEndpoint == "" {
-		*healthCheckEndpoint = os.Getenv("CLOUD_BILL_FRONTEND_HEALTH_CHECK_ENDPOINT")
+		*healthCheckEndpoint = os.Getenv("HEALTH_CHECK_ENDPOINT")
 	}
 
 	if *configFile == "" {
 		//try other flags
-		conf.FrontendServiceEndpoint = *frontendServiceEndpoint
+		conf.ServiceEndpoint = *serviceEndpoint
 		conf.HealthCheckEndpoint = *healthCheckEndpoint
 	} else {
 		if file, err := os.Open(*configFile); err != nil {
@@ -68,26 +68,14 @@ func GetConfiguration() (ServiceConfig, error) {
 
 	valid := true
 
-	if conf.FrontendServiceEndpoint == "" {
-		LogE.Println("FrontendServiceEndpoint was not set.")
+	if conf.ServiceEndpoint == "" {
+		LogE.Println("ServiceEndpoint was not set.")
 		valid = false
 	}
 
 	if conf.HealthCheckEndpoint == "" {
 		LogE.Println("HealthCheckEndpoint was not set.")
 		valid = false
-	}
-
-	if gAppCredPath,gAppCredExists := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIALS"); !gAppCredExists {
-		LogE.Println("GOOGLE_APPLICATION_CREDENTIALS was not set. ")
-		valid = false
-	} else {
-		if _, gAppCredPathErr := os.Stat(gAppCredPath); os.IsNotExist(gAppCredPathErr) {
-			LogE.Println("GOOGLE_APPLICATION_CREDENTIALS file does not exist: ", gAppCredPath)
-			valid = false
-		} else {
-			LogI.Println("Using GOOGLE_APPLICATION_CREDENTIALS file: ", gAppCredPath)
-		}
 	}
 
 	if !valid {
