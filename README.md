@@ -15,7 +15,7 @@ With Okta and JFrog, strengthen your Shift-Left DevSecOps strategy by validating
 ## Who should attend:
 Developers and DevOps engineers who use an identity solution like Okta to secure their API applications.
 
-## The Agenda (bulleted list):
+## The Agenda:
 1. Overview of Okta Identity Platform and the JFrog DevOps Platform
 2. Okta Authentication and Authorization for API Applications
 3. Overview of the Example AP Application
