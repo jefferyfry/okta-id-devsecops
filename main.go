@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/jefferyfry/funclog"
-	"okta-id-devsecops/workshop-app/config"
-	"okta-id-devsecops/workshop-app/web"
+	"okta-id-devsecops/config"
+	"okta-id-devsecops/web"
 )
 
 var (
