@@ -12,5 +12,5 @@ AWS:
   region: us-west-2
 app:
   dockerImageName: oktajfrog.jfrog.io/workshop-docker/okta-workshop-app #change to your servername
-  dockerFileLocation: workshop-app
+  dockerFileLocation: .
   buildName: okta-workshop-app

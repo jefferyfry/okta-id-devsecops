@@ -27,7 +27,7 @@ type ServiceConfig struct {
 }
 
 func GetConfiguration() (ServiceConfig, error) {
-	conf := ServiceConfig {
+	conf := ServiceConfig{
 		ServiceEndpoint,
 		HealthCheckEndpoint,
 		Aud,

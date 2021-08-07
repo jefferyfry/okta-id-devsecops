@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/jefferyfry/funclog"
-	"okta-id-devsecops/config"
-	"okta-id-devsecops/web"
+	"okta-id-devsecops/workshop-app/config"
+	"okta-id-devsecops/workshop-app/web"
 )
 
 var (
@@ -20,5 +20,5 @@ func main() {
 	}
 
 	//start web service
-	LogE.Fatal(web.SetUpService(conf.ServiceEndpoint,conf.HealthCheckEndpoint,conf.Aud,conf.Cid,config.Domain))
+	LogE.Fatal(web.SetUpService(conf.ServiceEndpoint,conf.HealthCheckEndpoint,conf.Aud,conf.Cid, config.Domain))
 }
