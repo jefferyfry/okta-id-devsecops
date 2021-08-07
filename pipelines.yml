@@ -108,8 +108,6 @@ pipelines:
             - sed "s|imageName|{{ .Values.app.dockerImageName }}:${run_number}|g" deployment.yml > my-deployment.yml
             - cat my-deployment.yml
             - kubectl get namespaces
-            - kubectl get nodes
-            - kubectl create namespace test
             - kubectl apply -f my-deployment.yml --namespace  okta-workshop
             - while [ -z "$url" ]; do url=$(kubectl describe service workshop-app --namespace  okta-workshop | grep 'LoadBalancer Ingress:' | awk '{printf "https://%s",$3;}'); sleep 2; done
             - echo "$url"
