@@ -107,6 +107,7 @@ pipelines:
             - mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
             - sed "s|imageName|{{ .Values.app.dockerImageName }}:${run_number}|g" deployment.yml > my-deployment.yml
             - cat my-deployment.yml
+            - aws eks update-kubeconfig --name workshop --region us-west-2
             - kubectl apply -f my-deployment.yml --namespace  okta-workshop
             - while [ -z "$url" ]; do url=$(kubectl describe service workshop-app --namespace  okta-workshop | grep 'LoadBalancer Ingress:' | awk '{printf "https://%s",$3;}'); sleep 2; done
             - echo "$url"
