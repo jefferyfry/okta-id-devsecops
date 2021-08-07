@@ -2,14 +2,14 @@ template: true
 valuesFilePath: values.yml
 
 resources:
-  - name: awsEksRepo
+  - name: codeRepo
     type: GitRepo
     configuration:
       path: {{ .Values.GitHub.path }}
       gitProvider: {{ .Values.GitHub.gitProvider }}
       branches:
         include: master
-  - name: awsEksImage
+  - name: dockerImage
     type: Image
     configuration:
       registry: {{ .Values.Artifactory.intName }}
@@ -17,13 +17,13 @@ resources:
       imageName: {{ .Values.app.dockerImageName }}
       imageTag: ${run_number}
       autoPull: true
-  - name: awsEksBuildInfo
+  - name: buildInfo
     type: Buildinfo
     configuration:
       sourceArtifactory: {{ .Values.Artifactory.intName }}
       buildName: {{ .Values.app.buildName }}
       buildNumber: ${run_number}
-  - name: promotedAwsEksBuildInfo
+  - name: promotedBuildInfo
     type: Buildinfo
     configuration:
       sourceArtifactory: {{ .Values.Artifactory.intName }}
@@ -42,18 +42,17 @@ pipelines:
           dockerImageName: {{ .Values.app.dockerImageName }}
           dockerImageTag: ${run_number}
           inputResources:
-            - name: awsEksRepo
+            - name: codeRepo
           integrations:
             - name: {{ .Values.Artifactory.intName }}
         execution:
           onStart:
-            - cd $res_awsEksRepo_resourcePath
-            - sed "s|Num|${run_number}|g" $res_awsEksRepo_resourcePath/workshop-app/src/app/app.component.html > $res_awsEksRepo_resourcePath/workshop-app/src/app/app.component.html.update
-            - mv $res_awsEksRepo_resourcePath/workshop-app/src/app/app.component.html $res_awsEksRepo_resourcePath/workshop-app/src/app/app.component.html.orig
-            - mv $res_awsEksRepo_resourcePath/workshop-app/src/app/app.component.html.update $res_awsEksRepo_resourcePath/workshop-app/src/app/app.component.html
+            - cd $res_codeRepo_resourcePath
+            - sed "s|Num|${run_number}|g" $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html > $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html.update
+            - mv $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html.orig
+            - mv $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html.update $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html
           onSuccess:
             - echo "Congrats the Docker image was built!"
-            - send_notification int_pagerduty_token --text "Docker image built {{ .Values.app.dockerImageName }} Tag ${run_number}"
       - name: app_docker_push
         type: DockerPush
         configuration:
@@ -66,19 +65,18 @@ pipelines:
           inputSteps:
             - name: app_docker_build
           outputResources:
-            - name: awsEksImage
-            - name: awsEksBuildInfo
+            - name: dockerImage
+            - name: buildInfo
         execution:
           onSuccess:
             - echo "Congrats the Docker image was pushed!"
-            - send_notification {{ .Values.PagerDuty.intName }} --text "Docker image pushed to dev repo {{ .Values.app.dockerImageName }} Tag ${run_number}"
       - name: publish_build_info
         type: PublishBuildInfo
         configuration:
           inputSteps:
             - name: app_docker_push
           outputResources:
-            - name: awsEksBuildInfo
+            - name: buildInfo
       - name: app_promote
         type: PromoteBuild
         configuration:
@@ -88,13 +86,12 @@ pipelines:
           comment:               Artifact passed Xray Scan
           copy:                  true
           inputResources:
-            - name: awsEksBuildInfo
+            - name: buildInfo
           outputResources:
-            - name: promotedAwsEksBuildInfo
+            - name: promotedBuildInfo
         execution:
           onSuccess:
             - echo "Congrats the Docker image was promoted!"
-            - send_notification {{ .Values.PagerDuty.intName }} --text "Docker image was promoted to the prod repo {{ .Values.app.dockerImageName }} Tag ${run_number}"
       - name: eks_deploy
         type: Bash
         configuration:
@@ -102,12 +99,12 @@ pipelines:
             - name: {{ .Values.AWS.intName }}
             - name: {{ .Values.AWS.eks }}
           inputResources:
-            - name: awsEksRepo
+            - name: codeRepo
           inputSteps:
             - name: app_promote
         execution:
           onExecute:
-            - cd $res_awsEksRepo_resourcePath
+            - cd $res_codeRepo_resourcePath
             - pwd
             - ls
             - curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator
@@ -115,10 +112,9 @@ pipelines:
             - mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
             - sed "s|imageName|{{ .Values.app.dockerImageName }}:${run_number}|g" workshop-app/deployment.yml > my-deployment.yaml
             - cat my-deployment.yaml
-            - kubectl apply -f my-deployment.yaml --namespace aws-eks-workshop
-            - while [ -z "$url" ]; do url=$(kubectl describe service workshop-app --namespace aws-eks-workshop | grep 'LoadBalancer Ingress:' | awk '{printf "https://%s",$3;}'); sleep 2; done
+            - kubectl apply -f my-deployment.yaml --namespace  okta-workshop
+            - while [ -z "$url" ]; do url=$(kubectl describe service workshop-app --namespace  okta-workshop | grep 'LoadBalancer Ingress:' | awk '{printf "https://%s",$3;}'); sleep 2; done
             - echo "$url"
             - echo "Workshop App launched!"
           onSuccess:
             - echo "Congrats the Docker image was deployed!"
-            - send_notification {{ .Values.PagerDuty.intName }} --text "Docker image was deployed to prod {{ .Values.app.dockerImageName }} Tag ${run_number}"

@@ -20,5 +20,5 @@ func main() {
 	}
 
 	//start web service
-	LogE.Fatal(web.SetUpService(conf.FrontendServiceEndpoint,conf.HealthCheckEndpoint))
+	LogE.Fatal(web.SetUpService(conf.ServiceEndpoint,conf.HealthCheckEndpoint,conf.Aud,conf.Cid,config.Domain))
 }

@@ -13,11 +13,15 @@ var (
 )
 
 type ApiHandler struct {
+	Aud string
+	Cid string
+	Domain string
 }
 
-func GetApiHandler() *ApiHandler {
-
-	return &ApiHandler{}
+func GetApiHandler(aud string,cid string,domain string) *ApiHandler {
+	return &ApiHandler{aud,
+		cid,
+	domain}
 }
 
 func (hdlr *ApiHandler) Healthz(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +29,7 @@ func (hdlr *ApiHandler) Healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hdlr *ApiHandler) ValidateApiAccess(w http.ResponseWriter, r *http.Request) {
-	if !isAuthenticated(r) {
+	if !isAuthenticated(r,hdlr.Aud,hdlr.Cid,hdlr.Domain) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("401 - You are not authorized for this request"))
 		return
@@ -36,7 +40,7 @@ func (hdlr *ApiHandler) ValidateApiAccess(w http.ResponseWriter, r *http.Request
 
 
 
-func isAuthenticated(r *http.Request) bool {
+func isAuthenticated(r *http.Request,aud string, cid string, domain string) bool {
 	authHeader := r.Header.Get("Authorization")
 
 	if authHeader == "" {
@@ -46,11 +50,11 @@ func isAuthenticated(r *http.Request) bool {
 	bearerToken := tokenParts[1]
 
 	toValidate := map[string]string{}
-	toValidate["aud"] = "api://default"
-	toValidate["cid"] = "{CLIENT_ID}"
+	toValidate["aud"] = aud
+	toValidate["cid"] = cid
 
 	jwtVerifierSetup := jwtverifier.JwtVerifier{
-		Issuer: "https://${yourOktaDomain}/oauth2/default",
+		Issuer: "https://"+domain+"/oauth2/default",
 		ClaimsToValidate: toValidate,
 	}
 

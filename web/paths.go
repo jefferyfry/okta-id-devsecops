@@ -6,8 +6,8 @@ import (
 )
 
 //SetUpService sets up the API service.
-func SetUpService(webServiceEndpoint string,healthCheckEndpoint string) error {
-	handler := GetApiHandler()
+func SetUpService(webServiceEndpoint string,healthCheckEndpoint string,aud string, cid string, domain string) error {
+	handler := GetApiHandler(aud,cid,domain)
 
 	apiService := mux.NewRouter()
 
