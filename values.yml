@@ -4,7 +4,7 @@ Artifactory:
   devRepo: workshop-docker-local
   prodRepo: workshop-docker-prod-local
 GitHub:
-  path: jefferyfry/okta-workshop #change to your github username
+  path: jefferyfry/okta-id-devsecops #change to your github username
   gitProvider: github_integration
 AWS:
   intName: aws_integration
