@@ -16,10 +16,10 @@ spec:
           image: imageName # IMPORTANT: Update!
           imagePullPolicy: Always
           ports:
-            - containerPort: 443
-              name: https
-            - containerPort: 80
-              name: http
+            - containerPort: 8096
+              name: healthcheck
+            - containerPort: 8086
+              name: service
       imagePullSecrets:
         - name: artifactory-secret
 ---
@@ -32,11 +32,11 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: https
-      port: 443
+    - name: healthcheck
+      port: 8096
       protocol: TCP
-    - name: http
-      port: 80
+    - name: service
+      port: 8086
       protocol: TCP
   selector:
     app:  workshop-app
