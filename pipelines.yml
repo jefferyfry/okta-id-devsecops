@@ -46,11 +46,6 @@ pipelines:
           integrations:
             - name: {{ .Values.Artifactory.intName }}
         execution:
-          onStart:
-            - cd $res_codeRepo_resourcePath
-            - sed "s|Num|${run_number}|g" $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html > $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html.update
-            - mv $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html.orig
-            - mv $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html.update $res_codeRepo_resourcePath/workshop-app/src/app/app.component.html
           onSuccess:
             - echo "Congrats the Docker image was built!"
       - name: app_docker_push
