@@ -1,5 +1,5 @@
 Artifactory:
-  server: oktajfrog.jfrog.io #change to your servername
+  server: okta.jfrog.io #change to your servername
   intName: artifactory_integration
   devRepo: workshop-docker-local
   prodRepo: workshop-docker-prod-local
@@ -11,6 +11,6 @@ AWS:
   eks: eks_integration
   region: us-west-2
 app:
-  dockerImageName: oktajfrog.jfrog.io/workshop-docker/okta-workshop-app #change to your servername
+  dockerImageName: okta.jfrog.io/workshop-docker/okta-workshop-app #change to your servername
   dockerFileLocation: .
   buildName: okta-workshop-app
