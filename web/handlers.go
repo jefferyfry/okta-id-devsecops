@@ -26,6 +26,7 @@ func GetApiHandler(aud string,cid string,domain string) *ApiHandler {
 
 func (hdlr *ApiHandler) Healthz(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("200 - Good"))
 }
 
 func (hdlr *ApiHandler) ValidateApiAccess(w http.ResponseWriter, r *http.Request) {
