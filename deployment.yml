@@ -16,8 +16,6 @@ spec:
           image: imageName # IMPORTANT: Update!
           env:
             - name: SERVICE_ENDPOINT
-              value: "8086"
-            - name: HEALTH_CHECK_ENDPOINT
               value: "80"
             - name: AUD
               value: "api.acme.com/test"
@@ -28,8 +26,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-              name: healthcheck
-            - containerPort: 8086
               name: service
       imagePullSecrets:
         - name: artifactory-secret
@@ -43,11 +39,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: healthcheck
-      port: 80
-      protocol: TCP
     - name: service
-      port: 8086
+      port: 80
       protocol: TCP
   selector:
     app:  workshop-app

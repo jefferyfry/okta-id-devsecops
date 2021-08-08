@@ -9,8 +9,7 @@ import (
 )
 
 var (
-	ServiceEndpoint = "8086"
-	HealthCheckEndpoint = "8096"
+	ServiceEndpoint = "80"
 	Aud = "api.acme.com/test"
 	Cid = "0oa1emw7xmqeh4Spd5d7"
 	Domain = "dev-73225252.okta.com"
@@ -20,7 +19,6 @@ var (
 
 type ServiceConfig struct {
 	ServiceEndpoint string `json:"serviceEndpoint"`
-	HealthCheckEndpoint string `json:"healthCheckEndpoint"`
 	Aud string `json:"aud"`
 	Cid string `json:"cid"`
 	Domain string `json:"domain"`
@@ -29,7 +27,6 @@ type ServiceConfig struct {
 func GetConfiguration() (ServiceConfig, error) {
 	conf := ServiceConfig{
 		ServiceEndpoint,
-		HealthCheckEndpoint,
 		Aud,
 		Cid,
 		Domain,
@@ -45,7 +42,6 @@ func GetConfiguration() (ServiceConfig, error) {
 	//parse commandline arguments
 	configFile := flag.String("configFile", "", "set the path to the configuration json file")
 	serviceEndpoint := flag.String("serviceEndpoint", "", "set the value of the service endpoint port")
-	healthCheckEndpoint := flag.String("healthCheckEndpoint", "", "set the value of the health check endpoint port")
 	aud := flag.String("aud", "", "set the value of the audience")
 	cid := flag.String("cid", "", "set the value of the client id")
 	domain := flag.String("domain", "", "set the value of the auth server domain")
@@ -57,9 +53,6 @@ func GetConfiguration() (ServiceConfig, error) {
 	}
 	if *serviceEndpoint == "" {
 		*serviceEndpoint = os.Getenv("SERVICE_ENDPOINT")
-	}
-	if *healthCheckEndpoint == "" {
-		*healthCheckEndpoint = os.Getenv("HEALTH_CHECK_ENDPOINT")
 	}
 	if *aud == "" {
 		*aud = os.Getenv("AUD")
@@ -74,7 +67,6 @@ func GetConfiguration() (ServiceConfig, error) {
 	if *configFile == "" {
 		//try other flags
 		conf.ServiceEndpoint = *serviceEndpoint
-		conf.HealthCheckEndpoint = *healthCheckEndpoint
 		conf.Aud = *aud
 		conf.Cid = *cid
 		conf.Domain = *domain
@@ -94,11 +86,6 @@ func GetConfiguration() (ServiceConfig, error) {
 
 	if conf.ServiceEndpoint == "" {
 		LogE.Println("ServiceEndpoint was not set.")
-		valid = false
-	}
-
-	if conf.HealthCheckEndpoint == "" {
-		LogE.Println("HealthCheckEndpoint was not set.")
 		valid = false
 	}
 
