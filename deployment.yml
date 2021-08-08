@@ -16,9 +16,9 @@ spec:
           image: imageName # IMPORTANT: Update!
           env:
             - name: SERVICE_ENDPOINT
-              value: 8086
+              value: "8086"
             - name: HEALTH_CHECK_ENDPOINT
-              value: 8096
+              value: "80"
             - name: AUD
               value: "api.acme.com/test"
             - name: CID
@@ -27,7 +27,7 @@ spec:
               value: "dev-73225252.okta.com"
           imagePullPolicy: Always
           ports:
-            - containerPort: 8096
+            - containerPort: 80
               name: healthcheck
             - containerPort: 8086
               name: service
@@ -44,7 +44,7 @@ spec:
   type: LoadBalancer
   ports:
     - name: healthcheck
-      port: 8096
+      port: 80
       protocol: TCP
     - name: service
       port: 8086
