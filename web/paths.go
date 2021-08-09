@@ -13,7 +13,7 @@ func SetUpService(webServiceEndpoint string,aud string, cid string, domain strin
 
 	apiService.Methods(http.MethodGet).Path("/healthz").HandlerFunc(handler.Healthz)
 
-	apiService.Methods(http.MethodGet).Path("/api/users").HandlerFunc(handler.ValidateApiAccess)
+	apiService.Methods(http.MethodGet).Path("/api/v1/users").HandlerFunc(handler.ValidateApiAccess)
 
 	return http.ListenAndServe(":"+webServiceEndpoint, apiService)
 }

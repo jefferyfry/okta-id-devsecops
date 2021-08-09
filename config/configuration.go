@@ -12,7 +12,7 @@ var (
 	ServiceEndpoint = "80"
 	Aud = "api.acme.com/test"
 	Cid = "0oa1emw7xmqeh4Spd5d7"
-	Domain = "dev-73225252.okta.com"
+	Issuer = "https://dev-73225252.okta.com/oauth2/aus1efvp3jwospP0Y5d7"
 	LogI = funclog.NewInfoLogger("INFO: ")
 	LogE = funclog.NewErrorLogger("ERROR: ")
 )
@@ -21,7 +21,7 @@ type ServiceConfig struct {
 	ServiceEndpoint string `json:"serviceEndpoint"`
 	Aud string `json:"aud"`
 	Cid string `json:"cid"`
-	Domain string `json:"domain"`
+	Issuer string `json:"issuer"`
 }
 
 func GetConfiguration() (ServiceConfig, error) {
@@ -29,7 +29,7 @@ func GetConfiguration() (ServiceConfig, error) {
 		ServiceEndpoint,
 		Aud,
 		Cid,
-		Domain,
+		Issuer,
 	}
 
 	if dir, err := os.Getwd(); err != nil {
@@ -44,7 +44,7 @@ func GetConfiguration() (ServiceConfig, error) {
 	serviceEndpoint := flag.String("serviceEndpoint", "", "set the value of the service endpoint port")
 	aud := flag.String("aud", "", "set the value of the audience")
 	cid := flag.String("cid", "", "set the value of the client id")
-	domain := flag.String("domain", "", "set the value of the auth server domain")
+	issuer := flag.String("issuer", "", "set the value of the auth server domain")
 	flag.Parse()
 
 	//try environment variables if necessary
@@ -60,8 +60,8 @@ func GetConfiguration() (ServiceConfig, error) {
 	if *cid == "" {
 		*cid = os.Getenv("CID")
 	}
-	if *domain == "" {
-		*domain = os.Getenv("DOMAIN")
+	if *issuer == "" {
+		*issuer = os.Getenv("ISSUER")
 	}
 
 	if *configFile == "" {
@@ -69,7 +69,7 @@ func GetConfiguration() (ServiceConfig, error) {
 		conf.ServiceEndpoint = *serviceEndpoint
 		conf.Aud = *aud
 		conf.Cid = *cid
-		conf.Domain = *domain
+		conf.Issuer = *issuer
 	} else {
 		if file, err := os.Open(*configFile); err != nil {
 			LogE.Printf("Error reading confile file %s %s", *configFile, err)
@@ -99,8 +99,8 @@ func GetConfiguration() (ServiceConfig, error) {
 		valid = false
 	}
 
-	if conf.Domain == "" {
-		LogE.Println("Domain was not set.")
+	if conf.Issuer == "" {
+		LogE.Println("Issuer was not set.")
 		valid = false
 	}
 

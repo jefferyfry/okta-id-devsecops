@@ -15,7 +15,7 @@ var (
 type ApiHandler struct {
 	Aud string
 	Cid string
-	Domain string
+	Issuer string
 }
 
 func GetApiHandler(aud string,cid string,domain string) *ApiHandler {
@@ -30,7 +30,7 @@ func (hdlr *ApiHandler) Healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hdlr *ApiHandler) ValidateApiAccess(w http.ResponseWriter, r *http.Request) {
-	if !isAuthenticated(r,hdlr.Aud,hdlr.Cid,hdlr.Domain) {
+	if !isAuthenticated(r,hdlr.Aud,hdlr.Cid,hdlr.Issuer) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("401 - You are not authorized for this request"))
 		return
@@ -41,7 +41,7 @@ func (hdlr *ApiHandler) ValidateApiAccess(w http.ResponseWriter, r *http.Request
 
 
 
-func isAuthenticated(r *http.Request,aud string, cid string, domain string) bool {
+func isAuthenticated(r *http.Request,aud string, cid string, issuer string) bool {
 	authHeader := r.Header.Get("Authorization")
 
 	if authHeader == "" {
@@ -55,7 +55,7 @@ func isAuthenticated(r *http.Request,aud string, cid string, domain string) bool
 	toValidate["cid"] = cid
 
 	jwtVerifierSetup := jwtverifier.JwtVerifier{
-		Issuer: "https://"+domain+"/oauth2/default",
+		Issuer: issuer,
 		ClaimsToValidate: toValidate,
 	}
 
