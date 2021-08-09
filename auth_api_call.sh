@@ -113,6 +113,9 @@ fi
 
 if [ -z "$access_token" ]; then exit 1; fi
 
-curl --fail -v -H "Authorization: Bearer ${access_token}" $apiurl
+if [ $verbose -eq 1 ]; then
+    echo "API URL: "
+    echo $apiurl
+fi
 
 if [ $(curl -v -H "Authorization: Bearer ${access_token}" $apiurl -w '%{http_code}\n' -s) == "200" ]; then exit 0; else exit 1; fi
