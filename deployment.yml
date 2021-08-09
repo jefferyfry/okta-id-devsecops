@@ -21,8 +21,8 @@ spec:
               value: "api.acme.com/test"
             - name: CID
               value: "0oa1emw7xmqeh4Spd5d7"
-            - name: DOMAIN
-              value: "dev-73225252.okta.com"
+            - name: ISSUER
+              value: "https://dev-73225252.okta.com/oauth2/aus1efvp3jwospP0Y5d7"
           imagePullPolicy: Always
           ports:
             - containerPort: 80

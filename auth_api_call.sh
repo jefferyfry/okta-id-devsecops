@@ -118,4 +118,15 @@ if [ $verbose -eq 1 ]; then
     echo $apiurl
 fi
 
-if [ $(curl -v -H "Authorization: Bearer ${access_token}" $apiurl -w '%{http_code}\n' -s) == "200" ]; then exit 0; else exit 1; fi
+status_code=$(curl -H "Authorization: Bearer ${access_token}" -s -o /dev/null -w "%{http_code}" $apiurl)
+
+if [ $verbose -eq 1 ]; then
+    echo "API Response: "
+    echo $status_code
+fi
+
+if [ $status_code == 200 ]; then
+  exit 0
+else
+  exit 1
+fi
