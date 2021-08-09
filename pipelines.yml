@@ -110,7 +110,7 @@ pipelines:
             - cat my-deployment.yml
             - kubectl get namespaces
             - kubectl apply -f my-deployment.yml --namespace  okta-workshop
-            - while [ -z "$url" ]; do url=$(kubectl describe service workshop-app --namespace  okta-workshop | grep 'LoadBalancer Ingress:' | awk '{printf "https://%s",$3;}'); sleep 2; done
+            - while [ -z "$url" ]; do url=$(kubectl describe service workshop-app --namespace  okta-workshop | grep 'LoadBalancer Ingress:' | awk '{printf "http://%s",$3;}'); sleep 2; done
             - echo "$url"
             - echo "Testing api access...."
             - ./auth_api_call.sh -v -o $int_okta_envs_org_server -s $int_okta_envs_auth_server -c $int_okta_envs_cid -u $int_okta_envs_user -p $int_okta_envs_password -r "http://localhost:8080/authorization-code/callback" "$url/api/v1/users"
