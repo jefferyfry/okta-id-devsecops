@@ -69,6 +69,7 @@ if [ $verbose -eq 1 ]; then
     echo "Redirect URI: '${redirect_uri}'"
 fi
 
+# authenticate to the org server using username and password. gets a temporary session token.
 rv=$(curl --silent "${org_server}/api/v1/authn" \
           -H "Origin: ${redirect}" \
           -H 'Content-Type: application/json' \
@@ -85,6 +86,7 @@ fi
 
 if [ -z "$session_token" ]; then exit 1; fi
 
+# now call the authentication server with the session token and get an access token
 authorize_url=$(printf "${auth_server}/v1/authorize?sessionToken=%s&client_id=%s&scope=openid&response_type=token&response_mode=fragment&nonce=%s&redirect_uri=%s&state=%s" \
       $session_token \
       $client_id \
@@ -118,7 +120,8 @@ if [ $verbose -eq 1 ]; then
     echo $apiurl
 fi
 
-status_code=$(curl -H "Authorization: Bearer ${access_token}" -s -o /dev/null -w "%{http_code}" $apiurl)
+# now call our API using the access token
+status_code=$(curl -v -H "Authorization: Bearer ${access_token}" -s -o /dev/null -w "%{http_code}" $apiurl)
 
 if [ $verbose -eq 1 ]; then
     echo "API Response: "
