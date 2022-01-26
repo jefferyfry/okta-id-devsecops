@@ -1,5 +1,7 @@
 # Okta-Id-DevSecOps
 
+[![Git](https://app.soluble.cloud/api/v1/public/badges/d3095645-7676-4a01-b415-02d7f38e9474.svg?orgId=604336610407)](https://app.soluble.cloud/repos/details/github.com/jefferyfry/okta-id-devsecops?orgId=604336610407)  
+
 This GitHub repository contains the code for the JFrog presentation _Shift-Identity-Left DevSecOps: Validate your API Authentication and Authorization before Production_ at [Okta Developer Day](https://www.okta.com/developerday/).
 
 With Okta and JFrog, strengthen your Shift-Left DevSecOps strategy by validating the security of your application’s REST API endpoints before you release to production and to your customers. Learn how you can use Okta and JFrog to automate the validation of your authentication and authorization policies for your REST APIs. In this webinar you will learn how you can integrate the JFrog Platform with Okta and deliver a secure REST API application.
